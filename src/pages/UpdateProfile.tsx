@@ -25,7 +25,7 @@ export const UpdateProfile: React.FC<RouteComponentProps> = () => {
     if (passwordRef?.current?.value !== confirmPasswordRef?.current?.value) {
       return setError('Passwords do not match');
     }
-    if (emailRef.current.value !== currentUser?.email) {
+    if (emailRef?.current?.value !== currentUser?.email) {
       promises.push(updateEmail(emailRef.current.value));
     }
     if (passwordRef?.current?.value) {
