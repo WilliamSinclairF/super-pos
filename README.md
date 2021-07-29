@@ -1,4 +1,4 @@
-# Open POS - Frontend - README IN CONSTRUCTION
+# Super POS - Frontend - README IN CONSTRUCTION
 
 ## Technologies
 
