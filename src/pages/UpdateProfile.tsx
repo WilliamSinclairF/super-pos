@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { useAuth } from '../context/AuthContext';
 
 export const UpdateProfile: React.FC<RouteComponentProps> = () => {
@@ -8,22 +9,19 @@ export const UpdateProfile: React.FC<RouteComponentProps> = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const { currentUser, updateEmail, updatePassword } = useAuth();
-
-  const [error, setError] = useState<string>('');
-  const [confirmationMessage, setConfirmationMessage] = useState('');
+  const { addNotification, removeNotification } = useAppNotificationsContext();
   const [loading, setLoading] = useState(false);
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const promises = [];
-    setError('');
-    setConfirmationMessage('');
+    removeNotification();
 
     if (!emailRef?.current?.value) {
-      return setError('Please provide an email');
+      return addNotification({ message: 'Please provide an email', type: 'danger' });
     }
     if (passwordRef?.current?.value !== confirmPasswordRef?.current?.value) {
-      return setError('Passwords do not match');
+      return addNotification({ message: 'Passwords do not match', type: 'danger' });
     }
     if (emailRef?.current?.value !== currentUser?.email) {
       promises.push(updateEmail(emailRef.current.value));
@@ -35,11 +33,11 @@ export const UpdateProfile: React.FC<RouteComponentProps> = () => {
 
     Promise.all(promises)
       .then(() => {
-        setConfirmationMessage('Profile updated');
+        addNotification({ message: 'Profile updated', type: 'success' });
       })
       .catch((error) => {
         const errorMessage = error?.message ? error?.message : 'Unable to update account';
-        setError(errorMessage);
+        addNotification({ message: errorMessage, type: 'danger' });
       })
       .finally(() => setLoading(false));
   }
@@ -47,11 +45,6 @@ export const UpdateProfile: React.FC<RouteComponentProps> = () => {
   return (
     <>
       <Card>
-        <div className="w-100 text-center mb-2">{error && <Alert variant="danger">{error}</Alert>}</div>
-        <div className="w-100 text-center mb-2">
-          {confirmationMessage && <Alert variant="success">{confirmationMessage}</Alert>}
-        </div>
-
         <Card.Body>
           <h2 className="text-center mb-4">Update Profile</h2>
           <Form onSubmit={handleSubmit}>

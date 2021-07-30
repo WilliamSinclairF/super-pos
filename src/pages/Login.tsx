@@ -1,30 +1,33 @@
 import { useRef, useState } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { useAuth } from '../context/AuthContext';
 
 export const Login: React.FC<RouteComponentProps> = ({ history }) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const { logIn } = useAuth();
-
-  const [error, setError] = useState<string>('');
+  const { addNotification, removeNotification } = useAppNotificationsContext();
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!emailRef?.current?.value || !passwordRef?.current?.value) {
-      return setError('Please provide an email and a password');
+      return addNotification({ message: 'Please provide an email and a password', type: 'danger' });
     }
 
     try {
       setLoading(true);
-      setError('');
+      removeNotification();
       await logIn(emailRef.current.value, passwordRef.current.value);
       setLoading(false);
       history.push('/');
     } catch (error) {
-      setError('Unable to log in, please verify your email and password');
+      addNotification({
+        message: 'Unable to log in, please verify your email and password',
+        type: 'danger',
+      });
       setLoading(false);
     }
   }
@@ -32,7 +35,6 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <>
       <Card>
-        <div className="w-100 text-center mb-2">{error && <Alert variant="danger">{error}</Alert>}</div>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           <Form onSubmit={handleSubmit}>

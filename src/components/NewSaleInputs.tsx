@@ -1,5 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 import { Card, Alert, Form, Button } from 'react-bootstrap';
+import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { Store } from '../interfaces/store';
 import { addSale } from '../services/sales';
 
@@ -8,18 +9,22 @@ interface Props {
 }
 
 export const NewSaleInputs = (props: Props) => {
-  const [error, setError] = useState('');
+  const { addNotification, removeNotification } = useAppNotificationsContext();
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    addSale({ amount: Number(amount), note, storeId: props.store.id });
+    removeNotification();
+    const response = await addSale({ amount: Number(amount), note, storeId: +props.store.id });
+    if (!response.ok) {
+      return addNotification({ message: response.data ? response.data : 'An unknown error occured', type: 'danger' });
+    }
+    addNotification({ message: 'New sale saved successfully', type: 'success' });
   }
   return (
     <Card>
-      <div className="w-100 text-center mb-2">{error && <Alert variant="danger">{error}</Alert>}</div>
       <Card.Body>
         <Form onSubmit={handleSubmit}>
           <Form.Group id="amount">

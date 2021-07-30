@@ -2,18 +2,20 @@ import React from 'react';
 import { useState } from 'react';
 import { Button, Card, Alert } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { useAuth } from '../context/AuthContext';
 
 export const Dashboard: React.FC<RouteComponentProps> = ({ history }) => {
-  const [error, setError] = useState<string>('');
+  const { addNotification, removeNotification } = useAppNotificationsContext();
+
   const { currentUser, logOut } = useAuth();
   async function handleLogout() {
-    setError('');
+    removeNotification();
     try {
       await logOut();
       history.push('/login');
     } catch (error) {
-      setError('Unable to log out');
+      addNotification({ message: 'Unable to log out', type: 'danger' });
     }
   }
 
@@ -22,7 +24,6 @@ export const Dashboard: React.FC<RouteComponentProps> = ({ history }) => {
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Dashboard</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
           <strong>Email:</strong> {currentUser?.email}
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update Profile

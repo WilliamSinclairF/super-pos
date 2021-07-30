@@ -20,7 +20,7 @@ export const StoreSelector = (props: Props) => {
               {store?.id === activeStore?.id && <strong>Selected</strong>} {store?.name} - {store?.address}
             </Card.Header>
             <Card.Body className="text-center">
-              <span className="w-100">Open: {store.storeSettings.open ? 'Yes' : 'No'}</span>
+              <span className="w-100">Open: {store?.storeSettings?.open ? 'Yes' : 'No'}</span>
               <Button className="w-100 mt-3" onClick={() => setActiveStore(store)}>
                 Select
               </Button>

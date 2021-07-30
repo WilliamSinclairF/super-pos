@@ -1,35 +1,36 @@
 import { useRef, useState } from 'react';
 import { Alert, Button, Card, Form } from 'react-bootstrap';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { useAuth } from '../context/AuthContext';
 
 export const Signup: React.FC<RouteComponentProps> = ({ history }) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
-  const { signUp, currentUser } = useAuth();
+  const { signUp } = useAuth();
+  const { addNotification, removeNotification } = useAppNotificationsContext();
 
-  const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     if (!emailRef?.current?.value || !passwordRef?.current?.value) {
-      return setError('Please provide an email and a password');
+      return addNotification({ message: 'Please provide an email and a password', type: 'danger' });
     }
 
     if (passwordRef?.current?.value !== confirmPasswordRef?.current?.value) {
-      return setError('Passwords do not match');
+      return addNotification({ message: 'Passwords do not match', type: 'danger' });
     }
 
     try {
       setLoading(true);
-      setError('');
+      removeNotification();
       await signUp(emailRef.current.value, passwordRef.current.value);
       setLoading(false);
       history.push('/');
     } catch (error) {
-      setError('Unable to create an account');
+      addNotification({ message: 'Unable to create an account', type: 'danger' });
       setLoading(false);
     }
   }
@@ -37,7 +38,6 @@ export const Signup: React.FC<RouteComponentProps> = ({ history }) => {
   return (
     <>
       <Card>
-        <div className="w-100 text-center mb-2">{error && <Alert variant="danger">{error}</Alert>}</div>
         <Card.Body>
           <h2 className="text-center mb-4">Sign Up</h2>
           <Form onSubmit={handleSubmit}>

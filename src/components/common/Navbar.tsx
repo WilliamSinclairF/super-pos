@@ -2,8 +2,8 @@ import { faHome } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Container, Nav, Navbar as ReactNavbar, NavDropdown } from 'react-bootstrap';
-import { useAuth } from '../context/AuthContext';
-import { useStoreContext } from '../context/StoreContext';
+import { useAuth } from '../../context/AuthContext';
+import { useStoreContext } from '../../context/StoreContext';
 
 export const Navbar = () => {
   const storeCtx = useStoreContext();
