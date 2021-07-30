@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
-import { useStoreContext } from '../context/StoreContext';
-import { Store } from '../interfaces/store';
+import { useStoreContext } from '../../context/StoreContext';
+import { Store } from '../../interfaces/store';
 import { StoreSelector } from './StoreSelector';
 
 interface Props {

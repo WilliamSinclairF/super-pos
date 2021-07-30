@@ -1,14 +1,14 @@
-import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Store } from '../interfaces/store';
 import { getAllStores } from '../services/stores';
+import { useAppNotificationsContext } from './AppNotificationsContext';
 import { useAuth } from './AuthContext';
 
 interface IStoreContext {
-  loading: boolean;
-  error?: string;
   activeStore: Store;
-  setActiveStore: Dispatch<SetStateAction<Store>>;
+  setActiveStore: (store: Store) => void;
   allStores;
+  fetchStoreList: () => void;
 }
 
 export const StoreContext = React.createContext<IStoreContext | null>(null);
@@ -18,42 +18,52 @@ export function useStoreContext() {
 }
 
 export const StoreProvider: React.FC = ({ children }) => {
-  const [activeStore, setActiveStore] = useState<Store | null>(null);
+  const [activeStore, _setActiveStore] = useState<Store | null>(null);
   const [allStores, setAllStores] = useState<Store[] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { setLoading, addNotification, removeNotification } = useAppNotificationsContext();
 
   const { currentUser } = useAuth();
 
-  async function getStoreList() {
+  async function fetchStoreList() {
     if (!currentUser) {
-      return setError('User not logged in');
+      console.log('no user');
+      return;
     }
-    setLoading(true);
-    const storeList = await getAllStores();
-    if (!storeList) {
+    try {
+      setLoading(true);
+
+      const storeList = await getAllStores();
+
+      if (!storeList) {
+        setLoading(false);
+        return addNotification({ message: 'No stores were found', type: 'danger' });
+      }
+      setAllStores(storeList);
+
       setLoading(false);
-      return setError('No stores were found');
+
+      const localActiveStore = JSON.parse(localStorage.getItem('activeStore'));
+
+      if (localActiveStore) {
+        _setActiveStore(localActiveStore);
+      }
+    } catch (error) {
+      setLoading(false);
+      return addNotification({ message: 'Unable to fetch stores', type: 'danger' });
     }
-    setAllStores(storeList);
-    setLoading(false);
   }
 
-  const value: IStoreContext = {
-    loading,
-    error,
+  function setActiveStore(store: Store) {
+    localStorage.setItem('activeStore', JSON.stringify(store));
+    _setActiveStore(store);
+  }
+
+  const contextValues: IStoreContext = {
     activeStore,
     setActiveStore,
     allStores,
+    fetchStoreList,
   };
 
-  useEffect(() => {
-    try {
-      getStoreList();
-    } catch (error) {
-      setError('Unable to fetch stores');
-    }
-  }, []);
-
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  return <StoreContext.Provider value={contextValues}>{children}</StoreContext.Provider>;
 };

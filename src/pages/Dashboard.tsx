@@ -5,16 +5,17 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import { useAppNotificationsContext } from '../context/AppNotificationsContext';
 import { useAuth } from '../context/AuthContext';
 
-export const Dashboard: React.FC<RouteComponentProps> = ({ history }) => {
+export const Dashboard: React.FC<RouteComponentProps> = () => {
   const { addNotification, removeNotification } = useAppNotificationsContext();
 
   const { currentUser, logOut } = useAuth();
+
   async function handleLogout() {
     removeNotification();
     try {
       await logOut();
-      history.push('/login');
     } catch (error) {
+      console.log(error);
       addNotification({ message: 'Unable to log out', type: 'danger' });
     }
   }
