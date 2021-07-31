@@ -32,6 +32,9 @@ export const Dashboard: React.FC<RouteComponentProps> = () => {
           <Link to="/new-sale" className="btn btn-primary w-100 mt-3">
             New Sale
           </Link>
+          <Link to="/new-store" className="btn btn-primary w-100 mt-3">
+            New Store
+          </Link>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">

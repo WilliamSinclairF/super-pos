@@ -1,11 +1,11 @@
 export interface Store {
-  id: string;
+  id?: string;
   name: string;
   description?: string;
   address: string;
-  createdAt: Date;
-  modifiedAt: Date;
-  storeSettings: StoreSettings;
+  createdAt?: Date;
+  modifiedAt?: Date;
+  storeSettings?: StoreSettings;
 }
 
 export interface StoreSettings {

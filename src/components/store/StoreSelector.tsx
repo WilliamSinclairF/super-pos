@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { useStoreContext } from '../../context/StoreContext';
 import { Store } from '../../interfaces/store';
 
@@ -10,10 +11,21 @@ interface Props {
 export const StoreSelector = (props: Props) => {
   const { activeStore, setActiveStore } = useStoreContext();
 
+  if (!props.stores.length) {
+    return (
+      <div className="w-100 text-center">
+        <p>
+          No store was found.
+          <Link to="/new-store">Create store</Link>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       {props?.stores?.map((store) => (
-        <Card key={store.id}>
+        <Card key={store?.id}>
           <Card.Header className={`${store?.id === activeStore?.id && 'alert-success'}`}>
             {store?.id === activeStore?.id && <strong>Selected</strong>} {store?.name} - {store?.address}
           </Card.Header>
