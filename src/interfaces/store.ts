@@ -1,3 +1,4 @@
+import { TaxCode } from './taxCode';
 export interface Store {
   id?: string;
   name: string;
@@ -9,6 +10,6 @@ export interface Store {
 }
 
 export interface StoreSettings {
-  taxCode: string;
+  taxCodes: TaxCode[];
   open: boolean;
 }

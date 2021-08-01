@@ -56,21 +56,22 @@ export const Navbar = () => {
                 <Nav.Link as={Link} to="/new-sale">
                   New Sale
                 </Nav.Link>
-                <NavDropdown title="Quick Actions" id="basic-nav-dropdown">
-                  <NavDropdown.Item as={Link} to="#action/3.1">
-                    Action
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="#action/3.2">
-                    Another action
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="#action/3.3">
-                    Something
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="#action/3.4">
-                    Separated link
-                  </NavDropdown.Item>
-                </NavDropdown>
+
+                {storeCtx?.activeStore && (
+                  <NavDropdown
+                    title={`Selected store: ${storeCtx?.activeStore?.address || 'n/a'}`}
+                    id="basic-nav-dropdown"
+                  >
+                    <NavDropdown.Item as={Link} to="/store-settings">
+                      Store settings
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+
+                    <NavDropdown.Item as={Link} to="#action/3.1">
+                      Change store
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                )}
                 <NavDropdown title="Profile" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="#action/3.1">
                     Action
@@ -86,10 +87,6 @@ export const Navbar = () => {
                     Separated link
                   </NavDropdown.Item>
                 </NavDropdown>
-              </Nav>
-
-              <Nav className="me-auto">
-                <BootstrapNavbar.Text>Selected store: {storeCtx?.activeStore?.address || 'n/a'}</BootstrapNavbar.Text>
               </Nav>
 
               <Nav className="me-auto">

@@ -7,6 +7,8 @@ import { ForgotPassword } from '../pages/ForgotPassword';
 import { UpdateProfile } from '../pages/UpdateProfile';
 import { NewSale } from '../pages/NewSale';
 import { NewStore } from '../pages/NewStore';
+import { ChangeStoreSettings } from '../pages/ChangeStoreSettings';
+
 import Loading from '../components/common/Loading';
 
 function Routes() {
@@ -17,6 +19,7 @@ function Routes() {
       <PrivateRoute exact path="/update-profile" component={UpdateProfile} />
       <PrivateRoute exact path="/new-sale" component={NewSale} />
       <PrivateRoute exact path="/new-store" component={NewStore} />
+      <PrivateRoute exact path="/store-settings" component={ChangeStoreSettings} />
 
       <Route exact path="/signup" component={Signup} />
       <Route exact path="/login" component={Login} />
